@@ -1,1 +1,24 @@
-<ion-nav [root]="rootPage"></ion-nav>
+<ion-menu [content]="mycontent">
+    <ion-content>
+        <p class="title">ZTUDY</p>
+        <ion-list>
+            <button (click)="toDataBasesPage()" ion-item>
+                <ion-icon item-start name="reorder"></ion-icon>
+                Bases de Datos
+            </button>
+            <button (click)="toSchoolsPage()" ion-item>
+                <ion-icon item-start name="book"></ion-icon>
+                Escuelas
+            </button>
+            <button (click)="toUsersPage()" ion-item>
+                <ion-icon item-start name="person"></ion-icon>
+                Usuarios
+            </button>
+        </ion-list>
+    </ion-content>
+    <ion-footer>
+        <button ion-button block (click)="logout()">Logout</button>
+    </ion-footer>
+</ion-menu>
+
+<ion-nav #mycontent [root]="rootPage"></ion-nav>
