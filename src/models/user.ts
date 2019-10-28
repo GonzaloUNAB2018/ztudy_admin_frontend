@@ -12,4 +12,5 @@ export class User {
     dateBirth: string;
     profilePhoto: string;
     profile: string;
+    sex: string;
 }

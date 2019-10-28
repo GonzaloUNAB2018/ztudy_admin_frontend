@@ -58,6 +58,4 @@ export class AngularFireProvider {
     this.afDb.database.ref(id+'/Users/'+uid).remove();
   }
 
-  
-
 }

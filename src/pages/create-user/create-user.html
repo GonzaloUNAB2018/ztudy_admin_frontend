@@ -12,7 +12,6 @@
   </ion-grid>
 </ion-header>
 <ion-content padding *ngIf="data">
-
   <ion-grid>
     <ion-row>
       <ion-col></ion-col>
@@ -34,7 +33,7 @@
             <ion-label floating>
               RUN
             </ion-label>
-            <ion-input placeholder="RUN" type="number" [(ngModel)]="user.run"></ion-input>
+            <ion-input placeholder="RUN" type="text" [(ngModel)]="user.run"></ion-input>
           </ion-item>
           <ion-item>
             <ion-label floating>
@@ -49,17 +48,32 @@
             <ion-label floating>
               Sexo
             </ion-label>
-            <ion-select placeholder="Sexo" [(ngModel)]="user.profile">
+            <ion-select placeholder="Sexo" [(ngModel)]="user.sex">
               <ion-option value="man">Hombre</ion-option>
               <ion-option value="woman">Mujer</ion-option>
             </ion-select>
           </ion-item>
-          <ion-item>
-            <ion-label floating>
-              Fecha de Nacimiento
-            </ion-label>
-            <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="user.dateBirth"></ion-datetime>
-          </ion-item>
+            <ion-grid>
+              <ion-row>
+                <ion-col col-12>
+                  <ion-label class="dateBirth">
+                    Fecha de Nacimiento
+                  </ion-label>
+                </ion-col>
+                <ion-col col-3></ion-col>
+                <ion-col col-2>
+                  <ion-input [(ngModel)]="date" maxlength="2" name="date" placeholder="01"></ion-input>
+                </ion-col>
+                <ion-col col-2>
+                  <ion-input [(ngModel)]="month" maxlength="2" name="month" placeholder="01"></ion-input>
+                </ion-col>
+                <ion-col col-4>
+                  <ion-input [(ngModel)]="year" maxlength="4" name="year" placeholder="1984"></ion-input>
+                </ion-col>
+                <ion-col col-3></ion-col>
+              </ion-row>
+            </ion-grid>
+            <!--ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="user.dateBirth"></ion-datetime-->
           <ion-item>
             <ion-label floating>
               Teléfono (9 dígitos)
@@ -76,13 +90,13 @@
             <ion-label floating>
               Password
             </ion-label>
-            <ion-input placeholder="Password" type="password" [(ngModel)]="user.password"></ion-input>
+            <ion-input placeholder="Password" type="password" [(ngModel)]="password"></ion-input>
           </ion-item>
           <ion-item>
             <ion-label floating>
               Reingrese Password
             </ion-label>
-            <ion-input placeholder="Reingrese Password" type="password" [(ngModel)]="user.vpassword"></ion-input>
+            <ion-input placeholder="Reingrese Password" type="password" [(ngModel)]="vpassword"></ion-input>
           </ion-item>
         </ion-list>
       

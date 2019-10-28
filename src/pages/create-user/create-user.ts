@@ -13,6 +13,11 @@ export class CreateUserPage {
 
   data: any;
   user = {} as User;
+  date: number;
+  month: number;
+  year: number;
+  password: string;
+  vpassword: string;
   users: any;
   userData: any;
   userDeletedData: any;
@@ -62,13 +67,15 @@ export class CreateUserPage {
   }
 
   createUser(){
-    if(!this.user.name||!this.user.surname||!this.user.run||!this.user.phoneNumber||!this.user.password||!this.user.vpassword){
+    //if(!this.user.name||!this.user.surname||!this.user.run||!this.user.phoneNumber||!this.password||!this.vpassword||
+    if(!this.user.name||!this.user.surname||!this.user.run||!this.password||!this.vpassword||!this.date||!this.month||!this.year){
       alert('Faltan datos!')
     }else{
       if(this.user.password===this.user.vpassword){
+        this.user.dateBirth = this.date.toString()+'-'+this.month.toString()+'-'+this.year.toString();
         this.http.post('http://localhost:8080/createuser', {
           displayName: this.user.name+' '+this.user.surname,
-          phoneNumber: '+56'+this.user.phoneNumber,
+          //phoneNumber: '+56'+this.user.phoneNumber,
           email: this.user.email,
           password: this.user.password,
           disabled: false
@@ -77,29 +84,38 @@ export class CreateUserPage {
         .subscribe(data=>{
           this.userData = data;
           console.log(this.userData);
-          this.user.uid = this.userData.uid;
-          this.user.phone = '+56'+this.user.phoneNumber;
-          this.user.profilePhoto = this.profilePhoto
-          this.afProvider.createUser(this.id, this.user);
-          const alert = this.alertCtrl.create({
-            title: 'Nuevo Usuario Crado',
-            message: 'Email: '+this.userData.email,
-            buttons: [
-              {
-                text: 'Ok',
-                handler: () => {
-                  //this.getUsers();
-                  this.user.name = null;
-                  this.user.surname = null;
-                  this.user.password = null;
-                  this.user.phoneNumber = null;
-                  this.user.email = null;
-                  this.navCtrl.pop();
+          if(this.userData){
+            this.user.uid = this.userData.uid;
+            this.user.phone = '+56'+this.user.phoneNumber;
+            this.user.profilePhoto = this.profilePhoto
+            this.afProvider.createUser(this.id, this.user);
+            const alert = this.alertCtrl.create({
+              title: 'Nuevo Usuario Crado',
+              message: 'Email: '+this.userData.email,
+              buttons: [
+                {
+                  text: 'Ok',
+                  handler: () => {
+                    //this.getUsers();
+                    this.user.name = null;
+                    this.user.surname = null;
+                    this.user.password = null;
+                    this.user.phoneNumber = null;
+                    this.user.email = null;
+                    this.navCtrl.pop();
+                  }
                 }
-              }
-            ]
-          });
-          alert.present();
+              ]
+            });
+            alert.present();
+            /*this.http.post('http://localhost:8080/sendemail',{
+              email: this.user.email,
+            })
+            .pipe(map(res=>res))
+            .subscribe(data=>{
+              console.log(data)
+            })*/
+          }
         })
       }else{
         alert('Passwords no coinciden')

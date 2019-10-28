@@ -21,6 +21,7 @@ export class UserPage {
   show : boolean = false;
   sex : any;
   profile : any;
+  password: string;
 
   constructor(
     public navCtrl: NavController,
@@ -104,6 +105,13 @@ export class UserPage {
 
   showPassword(){
     this.getUserData();
+    this.http.post('http://localhost:8080/getpassword', {
+      uid: this.uid,
+    })
+    .pipe(map(res=>res))
+    .subscribe(userData=>{
+      console.log(userData)
+    });
     this.show = true;
     setTimeout(() => {
       this.show = false;
