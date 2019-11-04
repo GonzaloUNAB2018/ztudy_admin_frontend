@@ -4,6 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { User } from '../../models/user';
 import { AngularFireProvider } from '../../providers/angular-fire/angular-fire';
+import { validate, format } from 'rut.js';
+
 
 @Component({
   selector: 'page-create-user',
@@ -26,6 +28,15 @@ export class CreateUserPage {
   };
   id: any;
   profilePhoto: string = ProfilePhoto.profilePhotoDefault;
+  providerData:[ { 
+    uid: undefined,//'a@a.cl',
+    displayName: undefined,
+    email: undefined,//'a@a.cl',
+    photoURL: undefined,
+    providerId: undefined//'password',
+    phoneNumber: undefined
+  } ];
+  run: string;
 
   constructor(
     public navCtrl: NavController,
@@ -36,7 +47,7 @@ export class CreateUserPage {
     private afProvider: AngularFireProvider,
     public navParams: NavParams
     ) {
-       this.id = navParams.get('id')
+       this.id = navParams.get('id');
   } 
 
   ionViewDidLoad(){
@@ -51,7 +62,9 @@ export class CreateUserPage {
     loadingServer.present();
     this.http.post('http://localhost:8080/contact', {
       message : this.consulta.message
-    }).pipe(map(res=>res)).subscribe(data=>{
+    })
+    .pipe(map(res=>res))
+    .subscribe(data=>{
       this.data = data
       console.log(this.data.message);
       if(this.data){
@@ -67,56 +80,69 @@ export class CreateUserPage {
   }
 
   createUser(){
-    //if(!this.user.name||!this.user.surname||!this.user.run||!this.user.phoneNumber||!this.password||!this.vpassword||
-    if(!this.user.name||!this.user.surname||!this.user.run||!this.password||!this.vpassword||!this.date||!this.month||!this.year){
+    console.log(format(this.run));
+    if(!this.user.name||!this.user.surname||!this.run||!this.user.phoneNumber||!this.password||!this.vpassword||!this.month||!this.year){
       alert('Faltan datos!')
     }else{
-      if(this.user.password===this.user.vpassword){
-        this.user.dateBirth = this.date.toString()+'-'+this.month.toString()+'-'+this.year.toString();
-        this.http.post('http://localhost:8080/createuser', {
-          displayName: this.user.name+' '+this.user.surname,
-          //phoneNumber: '+56'+this.user.phoneNumber,
-          email: this.user.email,
-          password: this.user.password,
-          disabled: false
-        })
-        .pipe(map(res=>res))
-        .subscribe(data=>{
-          this.userData = data;
-          console.log(this.userData);
-          if(this.userData){
-            this.user.uid = this.userData.uid;
-            this.user.phone = '+56'+this.user.phoneNumber;
-            this.user.profilePhoto = this.profilePhoto
-            this.afProvider.createUser(this.id, this.user);
-            const alert = this.alertCtrl.create({
-              title: 'Nuevo Usuario Crado',
-              message: 'Email: '+this.userData.email,
-              buttons: [
-                {
-                  text: 'Ok',
-                  handler: () => {
-                    //this.getUsers();
-                    this.user.name = null;
-                    this.user.surname = null;
-                    this.user.password = null;
-                    this.user.phoneNumber = null;
-                    this.user.email = null;
-                    this.navCtrl.pop();
+      if(this.password===this.vpassword){
+        if(validate(this.run)){
+          this.user.run = format(this.run);
+          this.user.dateBirth = this.date.toString()+'-'+this.month.toString()+'-'+this.year.toString();
+          this.http.post('http://localhost:8080/createuser', {
+            displayName: this.user.name+' '+this.user.surname,
+            email: this.user.email,
+            phoneNumber: '+56'+this.user.phoneNumber,
+            password: this.password,
+            disabled: false,
+            /*providerData: [{
+              uid: this.user.email,//'a@a.cl',
+              displayName: this.user.name+' '+this.user.surname,
+              email: this.user.email,//'a@a.cl',
+              //photoURL: undefined,
+              providerId: 'password',//'password',
+              //phoneNumber: undefined
+            }]*/
+          })
+          .pipe(map(res=>res))
+          .subscribe(data=>{
+            this.userData = data;
+            console.log(this.userData);
+            if(this.userData){
+              this.user.uid = this.userData.uid;
+              this.user.phone = '+56'+this.user.phoneNumber;
+              this.user.profilePhoto = this.profilePhoto
+              this.afProvider.createUser(this.id, this.user);
+              const alert = this.alertCtrl.create({
+                title: 'Nuevo Usuario Crado',
+                message: 'Email: '+this.userData.email,
+                buttons: [
+                  {
+                    text: 'Ok',
+                    handler: () => {
+                      //this.getUsers();
+                      this.user.name = null;
+                      this.user.surname = null;
+                      this.user.password = null;
+                      this.user.phoneNumber = null;
+                      this.user.email = null;
+                      this.navCtrl.pop();
+                    }
                   }
-                }
-              ]
-            });
-            alert.present();
-            /*this.http.post('http://localhost:8080/sendemail',{
-              email: this.user.email,
-            })
-            .pipe(map(res=>res))
-            .subscribe(data=>{
-              console.log(data)
-            })*/
-          }
-        })
+                ]
+              });
+              alert.present();
+              /*this.http.post('http://localhost:8080/sendemail',{
+                email: this.user.email,
+              })
+              .pipe(map(res=>res))
+              .subscribe(data=>{
+                console.log(data)
+              })*/
+            }
+          })
+        }else{
+          alert('Rut no válido')
+        }
       }else{
         alert('Passwords no coinciden')
       }
@@ -139,6 +165,8 @@ export class CreateUserPage {
 
     toast.present();
   }
+
+  
 
   
 

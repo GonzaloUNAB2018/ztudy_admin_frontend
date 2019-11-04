@@ -31,9 +31,6 @@
           <ion-card-content>
             <p class="text">{{(user|async)?.email}}</p>
             <p class="text">{{(user|async)?.phone}}</p>
-            <p class="text" *ngIf="show">La Password del usuario es: "{{(user|async)?.password}}"</p>
-            <button ion-button (click)="showPassword()" *ngIf="!show">Mostrar Password</button>
-            <button ion-button *ngIf="show" disabled>Mostrar Password</button>
           </ion-card-content>
           <ion-row>
             <ion-col>
